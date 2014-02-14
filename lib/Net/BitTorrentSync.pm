@@ -83,9 +83,21 @@ Adds a folder to Sync. If a secret is not specified, it will be generated automa
 The folder will have to pre-exist on the disk and Sync will add it into a list of syncing folders.
 Returns '0' if no errors, error code and error message otherwise.
 
-    dir (required) - specify path to the sync folder
-    secret (optional) - specify folder secret
-    selective_sync (optional) - specify sync mode, selective - 1, all files (default) - 0
+=over 4
+    
+=item dir (required) 
+
+Specifies path to the sync folder
+
+=item secret (optional) 
+
+Specifies folder secret
+
+=item selective_sync (optional) 
+
+Specifies sync mode: selective - 1; all files (default) - 0
+
+=back
 
 =cut
 
@@ -116,8 +128,13 @@ If a secret is specified, will return info about the folder with this secret.
 	    }
 	]
 
+=over 4
 
-    secret (optional) - if a secret is specified, will return info about the folder with this secret
+=item secret (optional) 
+
+If a secret is specified, will return info about the folder with this secret
+
+=back
 
 =cut 
 
@@ -136,7 +153,13 @@ Removes folder from Sync while leaving actual folder and files on disk.
 It will remove a folder from the Sync list of folders and does not touch any files or folders on disk.
 Returns '0' if no error, '1' if there’s no folder with specified secret.
 
-    secret (required) - specify folder secret
+=over 4
+    
+=item secret (required) 
+
+Specifies folder secret
+
+=back
 
 =cut
 
@@ -170,9 +193,15 @@ Note that the Selective Sync function is only available in the API at this time.
 	    }
 	]
 
+=over 4
 
-    secret (required) - must specify folder secret
-    path (optional) - specify path to a subfolder of the sync folder.
+=item secret (required) 
+
+=item path (optional) 
+
+Specifies path to a subfolder of the sync folder.
+
+=back
 
 =cut
 
@@ -190,9 +219,19 @@ sub get_files {
 Selects file for download for selective sync folders. 
 Returns file information with applied preferences.
 
-    secret (required) - must specify folder secret
-    path (required) - specify path to a subfolder of the sync folder.
-    download (required) - specify if file should be downloaded (yes - 1, no - 0)
+=over 4
+
+=item secret (required)
+
+=item path (required)
+
+Specifies path to a subfolder of the sync folder.
+
+=item download (required) 
+
+Specifies if file should be downloaded (yes - 1, no - 0)
+
+=back
 
 =cut
 
@@ -218,8 +257,11 @@ Returns list of peers connected to the specified folder.
 	    }
 	]
 
+=over 4
+    
+=item secret (required)
 
-    secret (required) - must specify folder secret
+=back
 
 =cut
 
@@ -245,11 +287,17 @@ This is set to disabled by default for all users but included in the API.
 	    encryption => "G3PNU7KTYM63VNQZFPP3Q3GAMTPRWDEZ"
 	}
 
+=over 4
 
-    secret (required) - must specify folder secret
-    type (optional) - if type=encrypted, generate secret with support of encrypted peer
+=item secret (required)
 
-	NOTE: there seems to be some contradiction in the documentation wrt to secret being required.
+=item type (optional)
+
+If type=encrypted, generate secret with support of encrypted peer
+
+=back
+
+NOTE: there seems to be some contradiction in the documentation wrt to secret being required.
 
 =cut
 
@@ -275,7 +323,11 @@ Returns preferences for the specified sync folder.
 	    use_tracker		 => 1
 	}
 
-    secret (required) - must specify folder secret
+=over 4
+
+=item secret (required)
+
+=back
 
 =cut
 
@@ -291,8 +343,27 @@ Sets preferences for the specified sync folder.
 Parameters are the same as in ‘Get folder preferences’. 
 Returns current settings.
 
-    secret (required) - must specify folder secret
-    params - { use_dht, use_hosts, search_lan, use_relay_server, use_tracker, use_sync_trash }
+=over 4
+
+=item secret (required)
+
+=item params
+
+=over 8
+
+=item use_dht
+
+=item use_hosts
+
+=item search_lan
+
+=item use_relay_server
+
+=item use_tracker
+
+=item use_sync_trash
+
+=back
 
 =cut
 
@@ -318,7 +389,11 @@ Returns list of predefined hosts for the folder, or error code if a secret is no
 		]
 	}
 
-    secret (required) - must specify folder secret
+=over 4
+
+=item secret (required)
+
+=back
 
 =cut
 
@@ -335,8 +410,15 @@ Existing list of hosts will be replaced.
 Hosts should be added as values of the ‘host’ parameter and separated by commas. 
 Returns current hosts if set successfully, error code otherwise.
 
-    secret (required) - must specify folder secret
-    hosts (required) - list of hosts, each host should be represented as “[address]:[port]”
+=over 4
+    
+=item secret (required)
+
+=item hosts (required)
+
+List of hosts, each host should be represented as “[address]:[port]”
+
+=back
 
 =cut
 
