@@ -459,7 +459,7 @@ Please see Sync user guide for description of each option.
 =cut 
 
 sub get_prefs {
-	return decode_json (get "http://$listen/api?method=get_prefs");
+	return _access_api("http://$listen/api?method=get_prefs");
 }
 
 =head2 set_prefs
