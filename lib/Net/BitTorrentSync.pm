@@ -3,8 +3,31 @@
 use strict;
 use warnings;
 package Net::BitTorrentSync;
+use Exporter;
+our @ISA = 'Exporter';
 
-our $VERSION = '0.1';
+our @EXPORT = qw( 
+    set_config
+    add_folder
+    get_folders
+    remove_folder
+    get_files
+    set_file_prefs
+    get_folder_peers
+    get_secrets
+    get_folder_prefs
+    set_folder_prefs
+    get_folder_hosts
+    set_folder_hosts
+    get_prefs
+    set_prefs
+    get_os
+    get_version
+    get_speed
+    shutdown
+);
+
+our $VERSION = '0.2';
 
 use LWP::Simple;
 use JSON;
@@ -535,7 +558,9 @@ sub shutdown {
 
 sub _access_api {
 	my $request = shift;
+    
 	my $response = get $request;
+    
 	die "API returned undef, check if btsync process is running\n" unless $response;
 	return decode_json($response);
 }
