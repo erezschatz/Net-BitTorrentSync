@@ -7,7 +7,9 @@ use Exporter;
 our @ISA = 'Exporter';
 
 our @EXPORT = qw(
+	start_btsync
     set_config
+	set_listened_path
     add_folder
     get_folders
     remove_folder
