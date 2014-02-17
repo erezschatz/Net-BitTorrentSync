@@ -6,7 +6,7 @@ package Net::BitTorrentSync;
 use Exporter;
 our @ISA = 'Exporter';
 
-our @EXPORT = qw( 
+our @EXPORT = qw(
     set_config
     add_folder
     get_folders
@@ -48,7 +48,7 @@ version 0.1
 =head1 SYNOPSIS
 
 	use Net::BitTorrentSync;
-	
+
 	start_btsync('/path/to/btsync_executable', '/path/to/config_file');
 
 or
@@ -70,8 +70,8 @@ or
 
 BitTorrent Sync uses the BitTorrent protocol to sync files between two or more machines, or nodes
 (computers or mobile phones) without the need of a server. It uses "secrets", a unique hash string
-given for each folder that replaces the need for a tracker machine. The more nodes the network has, 
-the faster the data will be synched between the nodes, allowing for very fast exchange rates. 
+given for each folder that replaces the need for a tracker machine. The more nodes the network has,
+the faster the data will be synched between the nodes, allowing for very fast exchange rates.
 In addition, folders and files can be shared as read-only, or as read and write.
 
 This is a complete wrapper of the published BitTorrent Sync API.
@@ -83,13 +83,13 @@ and fetch information about the BitTorrent Sync instance.
 
 The BitTorrent Sync technology and the existing BitTorrent Sync client are not open source or free
 software, nor are their specs available in any shape or form other than the API. Therefore, there
-is no guarantee whatsoever that the communication between nodes is not being monitored by  
-BitTorrent Inc. or by any third party, including the US Government or any Agency on behalf of the 
+is no guarantee whatsoever that the communication between nodes is not being monitored by
+BitTorrent Inc. or by any third party, including the US Government or any Agency on behalf of the
 US Government.
 
 =head1 REQUIREMENTS
 
-In order to run these commands you must have a running instance of the BitTorrent Sync client, 
+In order to run these commands you must have a running instance of the BitTorrent Sync client,
 available for download here: L<http://www.bittorrent.com/sync/downloads>.
 
 No other non-perl requirements are needed.
@@ -104,28 +104,28 @@ On Windows, use /config path_to_file.
 
 The config file may be located in any directory on your drive.
 
-Sync uses JSON format for the configuration file. 
+Sync uses JSON format for the configuration file.
 Here is a sample config file that you can use to enable API:
 
-	{
-	    // path to folder where Sync will store its internal data,
-	    // folder must exist on disk
-	    "storage_path" : "/Users/user/.SyncAPI",
-	
-	    // run Sync in GUI-less mode
-	    "use_gui" : false,
-	
-	    "webui" : {
-	        // IP address and port to access HTTP API
-	        "listen" : "127.0.0.1:8888",
-	        // login and password for HTTP basic authentication
-	        // authentication is optional
-	        "login" : "api",
-	        "password" : "secret",
-	        // API key received from BitTorrent
-	        "api_key" : "xxx"
-	    }
-	}
+    {
+        // path to folder where Sync will store its internal data,
+	// folder must exist on disk
+	"storage_path" : "/Users/user/.SyncAPI",
+
+        // run Sync in GUI-less mode
+        "use_gui" : false,
+
+        "webui" : {
+            // IP address and port to access HTTP API
+            "listen" : "127.0.0.1:8888",
+            // login and password for HTTP basic authentication
+            // authentication is optional
+            "login" : "api",
+            "password" : "secret",
+            // API key received from BitTorrent
+            "api_key" : "xxx"
+        }
+    }
 
 =head1 METHODS
 
@@ -134,13 +134,13 @@ Here is a sample config file that you can use to enable API:
 Launches a system command that starts the BitTorrent Sync program.
 
 =over 4
-    
-=item executable (required) 
 
-Specifies path to the BitTorrent Sync executable. 
+=item executable (required)
+
+Specifies path to the BitTorrent Sync executable.
 Alternatively, you can start the process manually and call either set_config or set_listened_address.
 
-=item config_file (required) 
+=item config_file (required)
 
 Specifies path to the config file path.
 
@@ -203,21 +203,21 @@ sub set_listened_address {
 
 =head2 add_folder
 
-Adds a folder to Sync. If a secret is not specified, it will be generated automatically. 
+Adds a folder to Sync. If a secret is not specified, it will be generated automatically.
 The folder will have to pre-exist on the disk and Sync will add it into a list of syncing folders.
 Returns '0' if no errors, error code and error message otherwise.
 
 =over 4
-    
-=item dir (required) 
+
+=item dir (required)
 
 Specifies path to the sync folder
 
-=item secret (optional) 
+=item secret (optional)
 
 Specifies folder secret
 
-=item selective_sync (optional) 
+=item selective_sync (optional)
 
 Specifies sync mode: selective - 1; all files (default) - 0
 
@@ -228,7 +228,7 @@ Specifies sync mode: selective - 1; all files (default) - 0
 sub add_folder {
 	my ($dir, $secret, $selective_sync) = @_;
 	my $request = "http://$listen/api?method=add_folder&dir=$dir";
-	
+
 	$secret and $request .= "&secret=$secret";
 	$selective_sync and $request .= '&selective_sync=1';
 
@@ -237,35 +237,35 @@ sub add_folder {
 
 =head2 get_folders
 
-Returns an array with folders info. 
+Returns an array with folders info.
 If a secret is specified, will return info about the folder with this secret.
 
-	[
-	    {
-			dir		 => "/path/to/dir/"
-	        secret	 => "A54HDDMPN4T4BTBT7SPBWXDB7JVYZ2K6D",
-	        size	 => 23762511569,
-	        type	 => "read_write",
-	        files	 => 3206,
-	        error	 => 0,
-	        indexing => 0
-	    }
-	]
+    [
+        {
+	    dir	     => "/path/to/dir/"
+	    secret   => "A54HDDMPN4T4BTBT7SPBWXDB7JVYZ2K6D",
+	    size     => 23762511569,
+	    type     => "read_write",
+	    files    => 3206,
+	    error    => 0,
+	    indexing => 0
+	}
+   ]
 
 =over 4
 
-=item secret (optional) 
+=item secret (optional)
 
 If a secret is specified, will return info about the folder with this secret
 
 =back
 
-=cut 
+=cut
 
 sub get_folders {
 	my ($secret) = @_;
 	my $request = "http://$listen/api?method=get_folders";
-	
+
 	$secret and $request .= "&secret=$secret";
 
 	return _access_api($request);
@@ -273,13 +273,13 @@ sub get_folders {
 
 =head2 remove_folder
 
-Removes folder from Sync while leaving actual folder and files on disk. 
+Removes folder from Sync while leaving actual folder and files on disk.
 It will remove a folder from the Sync list of folders and does not touch any files or folders on disk.
 Returns '0' if no error, '1' if there’s no folder with specified secret.
 
 =over 4
-    
-=item secret (required) 
+
+=item secret (required)
 
 Specifies folder secret
 
@@ -296,8 +296,8 @@ sub remove_folder {
 
 =head2 get_files
 
-Returns list of files within the specified directory. 
-If a directory is not specified, will return list of files and folders within the root folder. 
+Returns list of files within the specified directory.
+If a directory is not specified, will return list of files and folders within the root folder.
 Note that the Selective Sync function is only available in the API at this time.
 
 	[
@@ -319,9 +319,9 @@ Note that the Selective Sync function is only available in the API at this time.
 
 =over 4
 
-=item secret (required) 
+=item secret (required)
 
-=item path (optional) 
+=item path (optional)
 
 Specifies path to a subfolder of the sync folder.
 
@@ -332,7 +332,7 @@ Specifies path to a subfolder of the sync folder.
 sub get_files {
 	my ($secret, $path) = @_;
 	my $request = "http://$listen/api?method=get_files&secret=$secret";
-	
+
 	$path and $request .= "&path=$path";
 
 	return _access_api($request);
@@ -340,7 +340,7 @@ sub get_files {
 
 =head2 set_file_prefs
 
-Selects file for download for selective sync folders. 
+Selects file for download for selective sync folders.
 Returns file information with applied preferences.
 
 =over 4
@@ -351,7 +351,7 @@ Returns file information with applied preferences.
 
 Specifies path to a subfolder of the sync folder.
 
-=item download (required) 
+=item download (required)
 
 Specifies if file should be downloaded (yes - 1, no - 0)
 
@@ -372,17 +372,17 @@ Returns list of peers connected to the specified folder.
 
 	[
 	    {
-	       	id			=> "ARRdk5XANMb7RmQqEDfEZE-k5aI=",
-	        connection 	=> "direct", # direct or relay
-	        name 		=> "GT-I9500",
-	        synced		=> 0, # timestamp when last sync completed
-	        download 	=> 0,
-	        upload 		=> 22455367417
+	       	id	   => "ARRdk5XANMb7RmQqEDfEZE-k5aI=",
+	        connection => "direct", # direct or relay
+	        name 	   => "GT-I9500",
+	        synced	   => 0, # timestamp when last sync completed
+	        download   => 0,
+	        upload 	   => 22455367417
 	    }
 	]
 
 =over 4
-    
+
 =item secret (required)
 
 =back
@@ -397,14 +397,14 @@ sub get_folder_peers {
 
 =head2 get_secrets
 
-Generates read-write, read-only and encryption read-only secrets. 
+Generates read-write, read-only and encryption read-only secrets.
 If ‘secret’ parameter is specified, will return secrets available for sharing under this secret.
-The Encryption Secret is new functionality. 
-This is a secret for a read-only peer with encrypted content 
-(the peer can sync files but can not see their content). 
+The Encryption Secret is new functionality.
+This is a secret for a read-only peer with encrypted content
+(the peer can sync files but can not see their content).
 One example use is if a user wanted to backup files to an untrusted, unsecure, or public location.
 This is set to disabled by default for all users but included in the API.
-	
+
 	{
 	    read_only  => "ECK2S6MDDD7EOKKJZOQNOWDTJBEEUKGME",
 	    read_write => "DPFABC4IZX33WBDRXRPPCVYA353WSC3Q6",
@@ -439,12 +439,12 @@ sub get_secrets {
 Returns preferences for the specified sync folder.
 
 	{
-	    search_lan 		 => 1,
-	    use_dht 		 => 0,
-	    use_hosts 		 => 0,
+	    search_lan 	     => 1,
+	    use_dht 	     => 0,
+	    use_hosts 	     => 0,
 	    use_relay_server => 1,
-	    use_sync_trash 	 => 1,
-	    use_tracker		 => 1
+	    use_sync_trash   => 1,
+	    use_tracker	     => 1
 	}
 
 =over 4
@@ -463,8 +463,8 @@ sub get_folder_prefs {
 
 =head2 set_folder_prefs
 
-Sets preferences for the specified sync folder. 
-Parameters are the same as in ‘Get folder preferences’. 
+Sets preferences for the specified sync folder.
+Parameters are the same as in ‘Get folder preferences’.
 Returns current settings.
 
 =over 4
@@ -489,6 +489,8 @@ Returns current settings.
 
 =back
 
+=back
+
 =cut
 
 sub set_folder_prefs {
@@ -498,7 +500,7 @@ sub set_folder_prefs {
 	foreach my $pref (keys %{$prefs}) {
 		$request .= '&' . $pref . '=' . $prefs->{$pref};
 	}
-	
+
 	return _access_api($request);
 }
 
@@ -508,9 +510,9 @@ Returns list of predefined hosts for the folder, or error code if a secret is no
 
 	{
 	    hosts => [
-			"192.168.1.1:4567",
+		"192.168.1.1:4567",
 	    	"example.com:8975"
-		]
+	    ]
 	}
 
 =over 4
@@ -529,13 +531,13 @@ sub get_folder_hosts {
 
 =head2 set_folder_hosts
 
-Sets one or several predefined hosts for the specified sync folder. 
-Existing list of hosts will be replaced. 
-Hosts should be added as values of the ‘host’ parameter and separated by commas. 
+Sets one or several predefined hosts for the specified sync folder.
+Existing list of hosts will be replaced.
+Hosts should be added as values of the ‘host’ parameter and separated by commas.
 Returns current hosts if set successfully, error code otherwise.
 
 =over 4
-    
+
 =item secret (required)
 
 =item hosts (required)
@@ -549,7 +551,7 @@ List of hosts, each host should be represented as “[address]:[port]”
 sub set_folder_hosts {
 	my ($secret, $hosts) = @_;
 	my $request = "http://$listen/api?method=set_folder_hosts&secret=$secret&hosts=";
-	
+
 	$request .= join ',', @{$hosts};
 
 	return _access_api($request);
@@ -557,30 +559,30 @@ sub set_folder_hosts {
 
 =head2 get_prefs
 
-Returns BitTorrent Sync preferences. Contains dictionary with advanced preferences. 
+Returns BitTorrent Sync preferences. Contains dictionary with advanced preferences.
 Please see Sync user guide for description of each option.
 
 	{
-	    device_name 					=> "iMac",
-	    disk_low_priority 				=> "true",
-	    download_limit 					=> 0,
-	    folder_rescan_interval 			=> "600",
-	    lan_encrypt_data 				=> "true",
-	    lan_use_tcp 					=> "false",
-	    lang 							=> -1,
-	    listening_port 					=> 11589,
+	    device_name 		    => "iMac",
+	    disk_low_priority 		    => "true",
+	    download_limit 		    => 0,
+	    folder_rescan_interval 	    => "600",
+	    lan_encrypt_data 		    => "true",
+	    lan_use_tcp 		    => "false",
+	    lang 			    => -1,
+	    listening_port 	  	    => 11589,
 	    max_file_size_diff_for_patching => "1000",
-	    max_file_size_for_versioning 	=> "1000",
-	    rate_limit_local_peers 			=> "false",
-	    send_buf_size 					=> "5",
-	    sync_max_time_diff 				=> "600",
-	    sync_trash_ttl 					=> "30",
-	    upload_limit 					=> 0,
-	    use_upnp 						=> 0,
-	    recv_buf_size 					=> "5"
+	    max_file_size_for_versioning    => "1000",
+	    rate_limit_local_peers 	    => "false",
+	    send_buf_size 		    => "5",
+	    sync_max_time_diff 		    => "600",
+	    sync_trash_ttl 		    => "30",
+	    upload_limit 		    => 0,
+	    use_upnp 			    => 0,
+	    recv_buf_size 		    => "5"
 	}
 
-=cut 
+=cut
 
 sub get_prefs {
 	return _access_api("http://$listen/api?method=get_prefs");
@@ -588,7 +590,7 @@ sub get_prefs {
 
 =head2 set_prefs
 
-Sets BitTorrent Sync preferences. Parameters are the same as in ‘Get preferences’. 
+Sets BitTorrent Sync preferences. Parameters are the same as in ‘Get preferences’.
 Advanced preferences are set as general settings. Returns current settings.
 
 =cut
@@ -600,7 +602,7 @@ sub set_prefs {
 	foreach my $pref (keys %{$prefs}) {
 		$request .= '&' . $pref . '=' . $prefs->{$pref};
 	}
-	
+
 	return _access_api($request);
 }
 
@@ -608,9 +610,9 @@ sub set_prefs {
 
 Returns OS name where BitTorrent Sync is running.
 
-	{ 
-		os => "win32" 
-	}
+    {
+	os => "win32"
+    }
 
 =cut
 
@@ -622,9 +624,9 @@ sub get_os {
 
 Returns BitTorrent Sync version.
 
-	{ 
-		version => "1.2.48" 
-	}
+    {
+        version => "1.2.48"
+    }
 
 =cut
 
@@ -636,10 +638,10 @@ sub get_version {
 
 Returns current upload and download speed.
 
-	{
-	    download => 61007,
-	    upload => 0
-	}
+    {
+        download => 61007,
+        upload => 0
+    }
 
 =cut
 
@@ -659,35 +661,35 @@ sub shutdown {
 
 sub _access_api {
 	my $request = shift;
-    
+
 	my $response = get $request;
-    
+
 	die "API returned undef, check if btsync process is running\n" unless $response;
 	return decode_json($response);
 }
 
 =head1 TODO
 
-An actual testing suite 
+An actual testing suite
 
 =head1 SEE ALSO
 
 L<http://www.bittorrent.com/sync/developers/api>
 
 =head1 AUTHOR
- 
+
 Erez Schatz <erez.schatz@gmail.com>
 
 =head1 LICENSE
- 
+
 Copyright (c) 2014 Erez Schatz
- 
+
 The BitTorrent Sync API itself, and the description text used in this module is:
- 
+
 Copyright (c) 2014 BitTorrent, Inc.
 
 =head1 DISCLAIMER OF WARRANTY
- 
+
 BECAUSE THIS SOFTWARE IS LICENSED FREE OF CHARGE, THERE IS NO WARRANTY
 FOR THE SOFTWARE, TO THE EXTENT PERMITTED BY APPLICABLE LAW. EXCEPT WHEN
 OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES
@@ -697,7 +699,7 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE
 ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE SOFTWARE IS WITH
 YOU. SHOULD THE SOFTWARE PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL
 NECESSARY SERVICING, REPAIR, OR CORRECTION.
- 
+
 IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING
 WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MAY MODIFY AND/OR
 REDISTRIBUTE THE SOFTWARE AS PERMITTED BY THE ABOVE LICENSE, BE
