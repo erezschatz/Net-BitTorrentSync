@@ -29,6 +29,7 @@ our @EXPORT = qw(
 
 our $VERSION = '0.2';
 
+# for now, check switching to HTTP::Tiny or Hijk
 use LWP::Simple;
 use JSON;
 
@@ -48,7 +49,15 @@ version 0.1
 
 	use Net::BitTorrentSync;
 	
+	start_btsync('/path/to/btsync_executable', '/path/to/config_file');
+
+or
+
 	set_config('/path/to/config_file');
+
+or
+
+	set_listened_path('127.0.0.1:8888');
 
 	add_folder('/path/to/folder');
 
@@ -85,9 +94,83 @@ available for download here: L<http://www.bittorrent.com/sync/downloads>.
 
 No other non-perl requirements are needed.
 
+=head1 CONFIG FILE
+
+To enable the API, you must run BitTorrent Sync with the config file.
+This can be achieved either through the function start_btsync, or manually:
+
+On Mac and Linux, run the Sync executable with --config path_to_file argument.
+On Windows, use /config path_to_file.
+
+The config file may be located in any directory on your drive.
+
+Sync uses JSON format for the configuration file. 
+Here is a sample config file that you can use to enable API:
+
+	{
+	    // path to folder where Sync will store its internal data,
+	    // folder must exist on disk
+	    "storage_path" : "/Users/user/.SyncAPI",
+	
+	    // run Sync in GUI-less mode
+	    "use_gui" : false,
+	
+	    "webui" : {
+	        // IP address and port to access HTTP API
+	        "listen" : "127.0.0.1:8888",
+	        // login and password for HTTP basic authentication
+	        // authentication is optional
+	        "login" : "api",
+	        "password" : "secret",
+	        // API key received from BitTorrent
+	        "api_key" : "xxx"
+	    }
+	}
+
 =head1 METHODS
 
+=head2 start_btsync
+
+Launches a system command that starts the BitTorrent Sync program.
+
+=over 4
+    
+=item executable (required) 
+
+Specifies path to the BitTorrent Sync executable. 
+Alternatively, you can start the process manually and call either set_config or set_listened_address.
+
+=item config_file (required) 
+
+Specifies path to the config file path.
+
+=back
+
+=cut
+
+sub start_btsync {
+	my ($btsync, $path) = @_;
+	if ($^O eq 'MSWin32') {
+		# Make sure to turn \ into \\
+		system("$btsync /config $path");
+	} else {
+		system("$btsync --config $path");
+	}
+	set_config($path);
+}
+
 =head2 set_config
+
+Parses the config file to get the listened address from.
+Alternatively, you can use set_listened_address
+
+=over 4
+
+=item config_file (required)
+
+Specifies path to the config file.
+
+=back
 
 =cut
 
@@ -98,6 +181,24 @@ sub set_config {
 	$config = decode_json(<$fh>);
 	close $fh;
 	$listen = $config->{webui}->{listen};
+}
+
+=head2 set_listened_address
+
+Sets the listened address used to communicate with the BitTorrent Sync Process
+
+=over 4
+
+=item address (required)
+
+Specifies address that the process listens to, address should be represented as “[address]:[port]”
+
+=back
+
+=cut
+
+sub set_listened_address {
+	$listen = shift;
 }
 
 =head2 add_folder
