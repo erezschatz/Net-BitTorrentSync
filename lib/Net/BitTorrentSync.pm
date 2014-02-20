@@ -7,27 +7,27 @@ use Exporter;
 our @ISA = 'Exporter';
 
 our @EXPORT = qw(
-	start_btsync
-    set_config
-	set_listened_path
-    add_folder
-    get_folders
-    remove_folder
-    get_files
-    set_file_prefs
-    get_folder_peers
-    get_secrets
-    get_folder_prefs
-    set_folder_prefs
-    get_folder_hosts
-    set_folder_hosts
-    get_prefs
-    set_prefs
-    get_os
-    get_version
-    get_speed
-    shutdown
-);
+                        start_btsync
+                        set_config
+                        set_listened_path
+                        add_folder
+                        get_folders
+                        remove_folder
+                        get_files
+                        set_file_prefs
+                        get_folder_peers
+                        get_secrets
+                        get_folder_prefs
+                        set_folder_prefs
+                        get_folder_hosts
+                        set_folder_hosts
+                        get_prefs
+                        set_prefs
+                        get_os
+                        get_version
+                        get_speed
+                        shutdown
+        );
 
 our $VERSION = '0.2';
 
@@ -151,7 +151,7 @@ Specifies path to the config file path.
 =cut
 
 sub start_btsync {
-	my ($btsync, $path) = @_;
+        my ($btsync, $path) = @_;
 	if ($^O eq 'MSWin32') {
 		# Make sure to turn \ into \\
 		system("$btsync /config $path");
@@ -302,22 +302,22 @@ Returns list of files within the specified directory.
 If a directory is not specified, will return list of files and folders within the root folder.
 Note that the Selective Sync function is only available in the API at this time.
 
-	[
-	    {
-	        name  => "images",
-	        state => "created",
-	        type  => "folder"
-	    },
-	    {
-	        have_pieces  => 1,
-	        name 		 => "index.html",
-	        size 		 => 2726,
-	        state 		 => "created",
-	        total_pieces => 1,
-	       	type 		 => "file",
-	        download 	 => 1 # only for selective sync folders
-	    }
-	]
+    [
+        {
+            name  => "images",
+            state => "created",
+            type  => "folder"
+        },
+        {
+            have_pieces  => 1,
+            name 		 => "index.html",
+            size 		 => 2726,
+            state 		 => "created",
+            total_pieces => 1,
+           	type 		 => "file",
+            download 	 => 1 # only for selective sync folders
+        }
+    ]
 
 =over 4
 
@@ -372,16 +372,16 @@ sub set_file_prefs {
 
 Returns list of peers connected to the specified folder.
 
-	[
-	    {
-	       	id	   => "ARRdk5XANMb7RmQqEDfEZE-k5aI=",
-	        connection => "direct", # direct or relay
-	        name 	   => "GT-I9500",
-	        synced	   => 0, # timestamp when last sync completed
-	        download   => 0,
-	        upload 	   => 22455367417
-	    }
-	]
+    [
+        {
+            id	       => "ARRdk5XANMb7RmQqEDfEZE-k5aI=",
+            connection => "direct", # direct or relay
+            name       => "GT-I9500",
+            synced     => 0, # timestamp when last sync completed
+            download   => 0,
+            upload     => 22455367417
+        }
+    ]
 
 =over 4
 
@@ -407,11 +407,11 @@ This is a secret for a read-only peer with encrypted content
 One example use is if a user wanted to backup files to an untrusted, unsecure, or public location.
 This is set to disabled by default for all users but included in the API.
 
-	{
-	    read_only  => "ECK2S6MDDD7EOKKJZOQNOWDTJBEEUKGME",
-	    read_write => "DPFABC4IZX33WBDRXRPPCVYA353WSC3Q6",
-	    encryption => "G3PNU7KTYM63VNQZFPP3Q3GAMTPRWDEZ"
-	}
+    {
+        read_only  => "ECK2S6MDDD7EOKKJZOQNOWDTJBEEUKGME",
+        read_write => "DPFABC4IZX33WBDRXRPPCVYA353WSC3Q6",
+        encryption => "G3PNU7KTYM63VNQZFPP3Q3GAMTPRWDEZ"
+    }
 
 =over 4
 
@@ -440,14 +440,14 @@ sub get_secrets {
 
 Returns preferences for the specified sync folder.
 
-	{
-	    search_lan 	     => 1,
-	    use_dht 	     => 0,
-	    use_hosts 	     => 0,
-	    use_relay_server => 1,
-	    use_sync_trash   => 1,
-	    use_tracker	     => 1
-	}
+    {
+        search_lan 	 => 1,
+        use_dht 	 => 0,
+        use_hosts 	 => 0,
+        use_relay_server => 1,
+        use_sync_trash   => 1,
+        use_tracker	 => 1
+    }
 
 =over 4
 
@@ -510,12 +510,12 @@ sub set_folder_prefs {
 
 Returns list of predefined hosts for the folder, or error code if a secret is not specified.
 
-	{
-	    hosts => [
-		"192.168.1.1:4567",
-	    	"example.com:8975"
-	    ]
-	}
+    {
+        hosts => [
+    	   "192.168.1.1:4567",
+           "example.com:8975"
+        ]
+    }
 
 =over 4
 
@@ -564,30 +564,30 @@ sub set_folder_hosts {
 Returns BitTorrent Sync preferences. Contains dictionary with advanced preferences.
 Please see Sync user guide for description of each option.
 
-	{
-	    device_name 		    => "iMac",
-	    disk_low_priority 		    => "true",
-	    download_limit 		    => 0,
-	    folder_rescan_interval 	    => "600",
-	    lan_encrypt_data 		    => "true",
-	    lan_use_tcp 		    => "false",
-	    lang 			    => -1,
-	    listening_port 	  	    => 11589,
-	    max_file_size_diff_for_patching => "1000",
-	    max_file_size_for_versioning    => "1000",
-	    rate_limit_local_peers 	    => "false",
-	    send_buf_size 		    => "5",
-	    sync_max_time_diff 		    => "600",
-	    sync_trash_ttl 		    => "30",
-	    upload_limit 		    => 0,
-	    use_upnp 			    => 0,
-	    recv_buf_size 		    => "5"
-	}
+    {
+        device_name 		        => "iMac",
+        disk_low_priority 		=> "true",
+        download_limit 		        => 0,
+        folder_rescan_interval 	        => "600",
+        lan_encrypt_data 		=> "true",
+        lan_use_tcp 		        => "false",
+        lang 			        => -1,
+        listening_port 	  	        => 11589,
+        max_file_size_diff_for_patching => "1000",
+        max_file_size_for_versioning    => "1000",
+        rate_limit_local_peers 	        => "false",
+        send_buf_size 		        => "5",
+        sync_max_time_diff 		=> "600",
+        sync_trash_ttl 		        => "30",
+        upload_limit 		        => 0,
+        use_upnp 			=> 0,
+        recv_buf_size 		        => "5"
+    }
 
 =cut
 
 sub get_prefs {
-	return _access_api("http://$listen/api?method=get_prefs");
+        return _access_api("http://$listen/api?method=get_prefs");
 }
 
 =head2 set_prefs
@@ -598,14 +598,14 @@ Advanced preferences are set as general settings. Returns current settings.
 =cut
 
 sub set_prefs {
-	my ($secret, $prefs) = @_;
-	my $request = "http://$listen/api?method=set_prefs";
+        my ($secret, $prefs) = @_;
+        my $request = "http://$listen/api?method=set_prefs";
 
-	foreach my $pref (keys %{$prefs}) {
-		$request .= '&' . $pref . '=' . $prefs->{$pref};
-	}
+        foreach my $pref (keys %{$prefs}) {
+                $request .= '&' . $pref . '=' . $prefs->{$pref};
+        }
 
-	return _access_api($request);
+        return _access_api($request);
 }
 
 =head2 get_os
@@ -613,13 +613,13 @@ sub set_prefs {
 Returns OS name where BitTorrent Sync is running.
 
     {
-	os => "win32"
+        os => "win32"
     }
 
 =cut
 
 sub get_os {
-	return _access_api("http://$listen/api?method=get_os");
+        return _access_api("http://$listen/api?method=get_os");
 }
 
 =head2 get_version
@@ -633,7 +633,7 @@ Returns BitTorrent Sync version.
 =cut
 
 sub get_version {
-	return _access_api("http://$listen/api?method=get_version");
+    return _access_api("http://$listen/api?method=get_version");
 }
 
 =head2 get_speed
@@ -642,13 +642,13 @@ Returns current upload and download speed.
 
     {
         download => 61007,
-        upload => 0
+        upload   => 0
     }
 
 =cut
 
 sub get_speed {
-	return _access_api("http://$listen/api?method=get_speed");
+        return _access_api("http://$listen/api?method=get_speed");
 }
 
 =head2 shutdown
@@ -658,16 +658,16 @@ Gracefully stops Sync.
 =cut
 
 sub shutdown {
-	return _access_api("http://$listen/api?method=shutdown");
+        return _access_api("http://$listen/api?method=shutdown");
 }
 
 sub _access_api {
-	my $request = shift;
+        my $request = shift;
 
-	my $response = get $request;
+        my $response = get $request;
 
-	die "API returned undef, check if btsync process is running\n" unless $response;
-	return decode_json($response);
+        die "API returned undef, check if btsync process is running\n" unless $response;
+        return decode_json($response);
 }
 
 =head1 TODO
