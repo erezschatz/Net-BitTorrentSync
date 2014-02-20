@@ -61,6 +61,8 @@ or
 
 	set_listened_path('127.0.0.1:8888');
 
+then
+
 	add_folder('/path/to/folder');
 
 	my $folders = get_folders();
@@ -229,7 +231,7 @@ Specifies sync mode: selective - 1; all files (default) - 0
 
 sub add_folder {
 	my ($dir, $secret, $selective_sync) = @_;
-	my $request = "http://$listen/api?method=add_folder&dir=$dir";
+	my $request = "add_folder&dir=$dir";
 
 	$secret and $request .= "&secret=$secret";
 	$selective_sync and $request .= '&selective_sync=1';
@@ -266,7 +268,7 @@ If a secret is specified, will return info about the folder with this secret
 
 sub get_folders {
 	my ($secret) = @_;
-	my $request = "http://$listen/api?method=get_folders";
+	my $request = "get_folders";
 
 	$secret and $request .= "&secret=$secret";
 
@@ -291,7 +293,7 @@ Specifies folder secret
 
 sub remove_folder {
 	my ($secret) = @_;
-	my $request = "http://$listen/api?method=remove_folder&secret=$secret";
+	my $request = "remove_folder&secret=$secret";
 
 	return _access_api($request);
 }
@@ -333,7 +335,7 @@ Specifies path to a subfolder of the sync folder.
 
 sub get_files {
 	my ($secret, $path) = @_;
-	my $request = "http://$listen/api?method=get_files&secret=$secret";
+	my $request = "get_files&secret=$secret";
 
 	$path and $request .= "&path=$path";
 
@@ -363,7 +365,7 @@ Specifies if file should be downloaded (yes - 1, no - 0)
 
 sub set_file_prefs {
 	my ($secret, $path, $download) = @_;
-	my $request = "http://$listen/api?method=get_files&secret=$secret&path=$path&download=$download";
+	my $request = "get_files&secret=$secret&path=$path&download=$download";
 
 	return _access_api($request);
 }
@@ -393,7 +395,7 @@ Returns list of peers connected to the specified folder.
 
 sub get_folder_peers {
 	my ($secret) = @_;
-	my $request = "http://$listen/api?method=get_folder_peers&secret=$secret";
+	my $request = "get_folder_peers&secret=$secret";
 	return _access_api($request);
 }
 
@@ -430,7 +432,7 @@ NOTE: there seems to be some contradiction in the documentation wrt to secret be
 sub get_secrets {
 	my ($secret, $type) = @_;
 
-	my $request = "http://$listen/api?method=get_secrets";
+	my $request = "get_secrets";
 	$secret and $request .= "&secret=$secret";
 	$type and $request .= "&type=encryption";
 	return _access_api($request);
@@ -459,7 +461,7 @@ Returns preferences for the specified sync folder.
 
 sub get_folder_prefs {
 	my ($secret) = @_;
-	my $request = "http://$listen/api?method=get_folder_prefs&secret=$secret";
+	my $request = "get_folder_prefs&secret=$secret";
 	return _access_api($request);
 }
 
@@ -497,7 +499,7 @@ Returns current settings.
 
 sub set_folder_prefs {
 	my ($secret, $prefs) = @_;
-	my $request = "http://$listen/api?method=set_folder_prefs&secret=$secret";
+	my $request = "set_folder_prefs&secret=$secret";
 
 	foreach my $pref (keys %{$prefs}) {
 		$request .= '&' . $pref . '=' . $prefs->{$pref};
@@ -527,7 +529,7 @@ Returns list of predefined hosts for the folder, or error code if a secret is no
 
 sub get_folder_hosts {
 	my ($secret) = @_;
-	my $request = "http://$listen/api?method=get_folder_hosts&secret=$secret";
+	my $request = "get_folder_hosts&secret=$secret";
 	return _access_api($request);
 }
 
@@ -552,7 +554,7 @@ List of hosts, each host should be represented as “[address]:[port]”
 
 sub set_folder_hosts {
 	my ($secret, $hosts) = @_;
-	my $request = "http://$listen/api?method=set_folder_hosts&secret=$secret&hosts=";
+	my $request = "set_folder_hosts&secret=$secret&hosts=";
 
 	$request .= join ',', @{$hosts};
 
@@ -587,7 +589,7 @@ Please see Sync user guide for description of each option.
 =cut
 
 sub get_prefs {
-        return _access_api("http://$listen/api?method=get_prefs");
+        return _access_api("get_prefs");
 }
 
 =head2 set_prefs
@@ -599,7 +601,7 @@ Advanced preferences are set as general settings. Returns current settings.
 
 sub set_prefs {
         my ($secret, $prefs) = @_;
-        my $request = "http://$listen/api?method=set_prefs";
+        my $request = "set_prefs";
 
         foreach my $pref (keys %{$prefs}) {
                 $request .= '&' . $pref . '=' . $prefs->{$pref};
@@ -619,7 +621,7 @@ Returns OS name where BitTorrent Sync is running.
 =cut
 
 sub get_os {
-        return _access_api("http://$listen/api?method=get_os");
+        return _access_api("get_os");
 }
 
 =head2 get_version
@@ -633,7 +635,7 @@ Returns BitTorrent Sync version.
 =cut
 
 sub get_version {
-    return _access_api("http://$listen/api?method=get_version");
+    return _access_api("get_version");
 }
 
 =head2 get_speed
@@ -648,7 +650,7 @@ Returns current upload and download speed.
 =cut
 
 sub get_speed {
-        return _access_api("http://$listen/api?method=get_speed");
+        return _access_api("get_speed");
 }
 
 =head2 shutdown
@@ -658,11 +660,13 @@ Gracefully stops Sync.
 =cut
 
 sub shutdown {
-        return _access_api("http://$listen/api?method=shutdown");
+        return _access_api("shutdown");
 }
 
 sub _access_api {
         my $request = shift;
+
+        $request = 'http://$listen/api?method=' . $request;
 
         my $response = get $request;
 
