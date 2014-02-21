@@ -7,27 +7,27 @@ use Exporter;
 our @ISA = 'Exporter';
 
 our @EXPORT = qw(
-                        start_btsync
-                        set_config
-                        set_listened_path
-                        add_folder
-                        get_folders
-                        remove_folder
-                        get_files
-                        set_file_prefs
-                        get_folder_peers
-                        get_secrets
-                        get_folder_prefs
-                        set_folder_prefs
-                        get_folder_hosts
-                        set_folder_hosts
-                        get_prefs
-                        set_prefs
-                        get_os
-                        get_version
-                        get_speed
-                        shutdown
-        );
+    start_btsync
+    set_config
+    set_listened_path
+    add_folder
+    get_folders
+    remove_folder
+    get_files
+    set_file_prefs
+    get_folder_peers
+    get_secrets
+    get_folder_prefs
+    set_folder_prefs
+    get_folder_hosts
+    set_folder_hosts
+    get_prefs
+    set_prefs
+    get_os
+    get_version
+    get_speed
+    shutdown
+);
 
 our $VERSION = '0.2';
 
@@ -49,25 +49,25 @@ version 0.1
 
 =head1 SYNOPSIS
 
-	use Net::BitTorrentSync;
+    use Net::BitTorrentSync;
 
-	start_btsync('/path/to/btsync_executable', '/path/to/config_file');
-
-or
-
-	set_config('/path/to/config_file');
+    start_btsync('/path/to/btsync_executable', '/path/to/config_file');
 
 or
 
-	set_listened_path('127.0.0.1:8888');
+    set_config('/path/to/config_file');
+
+or
+
+    set_listened_path('127.0.0.1:8888');
 
 then
 
-	add_folder('/path/to/folder');
+    add_folder('/path/to/folder');
 
-	my $folders = get_folders();
+    my $folders = get_folders();
 
-	remove_folder($folders->[0]->{secret});
+    remove_folder($folders->[0]->{secret});
 
 
 =head1 DESCRIPTION
@@ -113,8 +113,8 @@ Here is a sample config file that you can use to enable API:
 
     {
         // path to folder where Sync will store its internal data,
-	// folder must exist on disk
-	"storage_path" : "/Users/user/.SyncAPI",
+        // folder must exist on disk
+        "storage_path" : "/Users/user/.SyncAPI",
 
         // run Sync in GUI-less mode
         "use_gui" : false,
@@ -153,14 +153,14 @@ Specifies path to the config file path.
 =cut
 
 sub start_btsync {
-        my ($btsync, $path) = @_;
-	if ($^O eq 'MSWin32') {
-		# Make sure to turn \ into \\
-		system("$btsync /config $path");
-	} else {
-		system("$btsync --config $path");
-	}
-	set_config($path);
+    my ($btsync, $path) = @_;
+    if ($^O eq 'MSWin32') {
+        # Make sure to turn \ into \\
+        system("$btsync /config $path");
+    } else {
+        system("$btsync --config $path");
+    }
+    set_config($path);
 }
 
 =head2 set_config
@@ -179,12 +179,12 @@ Specifies path to the config file.
 =cut
 
 sub set_config {
-	my $path = shift;
-	local $/;
-	open my $fh, '<', $path or die "Error opening config file $path - $!\n";
-	$config = decode_json(<$fh>);
-	close $fh;
-	$listen = $config->{webui}->{listen};
+    my $path = shift;
+    local $/;
+    open my $fh, '<', $path or die "Error opening config file $path - $!\n";
+    $config = decode_json(<$fh>);
+    close $fh;
+    $listen = $config->{webui}->{listen};
 }
 
 =head2 set_listened_address
@@ -202,7 +202,7 @@ Specifies address that the process listens to, address should be represented as 
 =cut
 
 sub set_listened_address {
-	$listen = shift;
+    $listen = shift;
 }
 
 =head2 add_folder
@@ -230,13 +230,13 @@ Specifies sync mode: selective - 1; all files (default) - 0
 =cut
 
 sub add_folder {
-	my ($dir, $secret, $selective_sync) = @_;
-	my $request = "add_folder&dir=$dir";
+    my ($dir, $secret, $selective_sync) = @_;
+    my $request = "add_folder&dir=$dir";
 
-	$secret and $request .= "&secret=$secret";
-	$selective_sync and $request .= '&selective_sync=1';
+    $secret and $request .= "&secret=$secret";
+    $selective_sync and $request .= '&selective_sync=1';
 
-	return _access_api($request);
+    return _access_api($request);
 }
 
 =head2 get_folders
@@ -246,14 +246,14 @@ If a secret is specified, will return info about the folder with this secret.
 
     [
         {
-	    dir	     => "/path/to/dir/"
-	    secret   => "A54HDDMPN4T4BTBT7SPBWXDB7JVYZ2K6D",
-	    size     => 23762511569,
-	    type     => "read_write",
-	    files    => 3206,
-	    error    => 0,
-	    indexing => 0
-	}
+            dir      => "/path/to/dir/"
+            secret   => "A54HDDMPN4T4BTBT7SPBWXDB7JVYZ2K6D",
+            size     => 23762511569,
+            type     => "read_write",
+            files    => 3206,
+            error    => 0,
+            indexing => 0
+        }
    ]
 
 =over 4
@@ -267,12 +267,12 @@ If a secret is specified, will return info about the folder with this secret
 =cut
 
 sub get_folders {
-	my ($secret) = @_;
-	my $request = "get_folders";
+    my ($secret) = @_;
+    my $request = "get_folders";
 
-	$secret and $request .= "&secret=$secret";
+    $secret and $request .= "&secret=$secret";
 
-	return _access_api($request);
+    return _access_api($request);
 }
 
 =head2 remove_folder
@@ -292,10 +292,10 @@ Specifies folder secret
 =cut
 
 sub remove_folder {
-	my ($secret) = @_;
-	my $request = "remove_folder&secret=$secret";
+    my ($secret) = @_;
+    my $request = "remove_folder&secret=$secret";
 
-	return _access_api($request);
+    return _access_api($request);
 }
 
 =head2 get_files
@@ -312,12 +312,12 @@ Note that the Selective Sync function is only available in the API at this time.
         },
         {
             have_pieces  => 1,
-            name 		 => "index.html",
-            size 		 => 2726,
-            state 		 => "created",
+            name         => "index.html",
+            size         => 2726,
+            state        => "created",
             total_pieces => 1,
-           	type 		 => "file",
-            download 	 => 1 # only for selective sync folders
+            type         => "file",
+            download     => 1 # only for selective sync folders
         }
     ]
 
@@ -334,12 +334,12 @@ Specifies path to a subfolder of the sync folder.
 =cut
 
 sub get_files {
-	my ($secret, $path) = @_;
-	my $request = "get_files&secret=$secret";
+    my ($secret, $path) = @_;
+    my $request = "get_files&secret=$secret";
 
-	$path and $request .= "&path=$path";
+    $path and $request .= "&path=$path";
 
-	return _access_api($request);
+    return _access_api($request);
 }
 
 =head2 set_file_prefs
@@ -364,10 +364,10 @@ Specifies if file should be downloaded (yes - 1, no - 0)
 =cut
 
 sub set_file_prefs {
-	my ($secret, $path, $download) = @_;
-	my $request = "get_files&secret=$secret&path=$path&download=$download";
+    my ($secret, $path, $download) = @_;
+    my $request = "get_files&secret=$secret&path=$path&download=$download";
 
-	return _access_api($request);
+    return _access_api($request);
 }
 
 =head2 get_folder_peers
@@ -376,7 +376,7 @@ Returns list of peers connected to the specified folder.
 
     [
         {
-            id	       => "ARRdk5XANMb7RmQqEDfEZE-k5aI=",
+            id         => "ARRdk5XANMb7RmQqEDfEZE-k5aI=",
             connection => "direct", # direct or relay
             name       => "GT-I9500",
             synced     => 0, # timestamp when last sync completed
@@ -394,9 +394,9 @@ Returns list of peers connected to the specified folder.
 =cut
 
 sub get_folder_peers {
-	my ($secret) = @_;
-	my $request = "get_folder_peers&secret=$secret";
-	return _access_api($request);
+    my ($secret) = @_;
+    my $request = "get_folder_peers&secret=$secret";
+    return _access_api($request);
 }
 
 =head2 get_secrets
@@ -421,7 +421,7 @@ This is set to disabled by default for all users but included in the API.
 
 =item type (optional)
 
-If type=encrypted, generate secret with support of encrypted peer
+If type = encrypted, generate secret with support of encrypted peer
 
 =back
 
@@ -430,12 +430,12 @@ NOTE: there seems to be some contradiction in the documentation wrt to secret be
 =cut
 
 sub get_secrets {
-	my ($secret, $type) = @_;
+    my ($secret, $type) = @_;
 
-	my $request = "get_secrets";
-	$secret and $request .= "&secret=$secret";
-	$type and $request .= "&type=encryption";
-	return _access_api($request);
+    my $request = "get_secrets";
+    $secret and $request .= "&secret=$secret";
+    $type and $request .= "&type=encryption";
+    return _access_api($request);
 }
 
 =head2 get_folder_prefs
@@ -443,12 +443,12 @@ sub get_secrets {
 Returns preferences for the specified sync folder.
 
     {
-        search_lan 	 => 1,
-        use_dht 	 => 0,
-        use_hosts 	 => 0,
+        search_lan       => 1,
+        use_dht          => 0,
+        use_hosts        => 0,
         use_relay_server => 1,
         use_sync_trash   => 1,
-        use_tracker	 => 1
+        use_tracker      => 1
     }
 
 =over 4
@@ -460,9 +460,9 @@ Returns preferences for the specified sync folder.
 =cut
 
 sub get_folder_prefs {
-	my ($secret) = @_;
-	my $request = "get_folder_prefs&secret=$secret";
-	return _access_api($request);
+    my ($secret) = @_;
+    my $request = "get_folder_prefs&secret=$secret";
+    return _access_api($request);
 }
 
 =head2 set_folder_prefs
@@ -498,14 +498,14 @@ Returns current settings.
 =cut
 
 sub set_folder_prefs {
-	my ($secret, $prefs) = @_;
-	my $request = "set_folder_prefs&secret=$secret";
+    my ($secret, $prefs) = @_;
+    my $request = "set_folder_prefs&secret=$secret";
 
-	foreach my $pref (keys %{$prefs}) {
-		$request .= '&' . $pref . '=' . $prefs->{$pref};
-	}
+    foreach my $pref (keys %{$prefs}) {
+        $request .= '&' . $pref . '=' . $prefs->{$pref};
+    }
 
-	return _access_api($request);
+    return _access_api($request);
 }
 
 =head2 get_folder_hosts
@@ -514,7 +514,7 @@ Returns list of predefined hosts for the folder, or error code if a secret is no
 
     {
         hosts => [
-    	   "192.168.1.1:4567",
+           "192.168.1.1:4567",
            "example.com:8975"
         ]
     }
@@ -528,9 +528,9 @@ Returns list of predefined hosts for the folder, or error code if a secret is no
 =cut
 
 sub get_folder_hosts {
-	my ($secret) = @_;
-	my $request = "get_folder_hosts&secret=$secret";
-	return _access_api($request);
+    my ($secret) = @_;
+    my $request = "get_folder_hosts&secret=$secret";
+    return _access_api($request);
 }
 
 =head2 set_folder_hosts
@@ -553,12 +553,12 @@ List of hosts, each host should be represented as “[address]:[port]”
 =cut
 
 sub set_folder_hosts {
-	my ($secret, $hosts) = @_;
-	my $request = "set_folder_hosts&secret=$secret&hosts=";
+    my ($secret, $hosts) = @_;
+    my $request = "set_folder_hosts&secret=$secret&hosts=";
 
-	$request .= join ',', @{$hosts};
+    $request .= join ',', @{$hosts};
 
-	return _access_api($request);
+    return _access_api($request);
 }
 
 =head2 get_prefs
@@ -567,23 +567,23 @@ Returns BitTorrent Sync preferences. Contains dictionary with advanced preferenc
 Please see Sync user guide for description of each option.
 
     {
-        device_name 		        => "iMac",
-        disk_low_priority 		=> "true",
-        download_limit 		        => 0,
-        folder_rescan_interval 	        => "600",
-        lan_encrypt_data 		=> "true",
-        lan_use_tcp 		        => "false",
-        lang 			        => -1,
-        listening_port 	  	        => 11589,
+        device_name                     => "iMac",
+        disk_low_priority               => "true",
+        download_limit                  => 0,
+        folder_rescan_interval          => "600",
+        lan_encrypt_data                => "true",
+        lan_use_tcp                     => "false",
+        lang                            => -1,
+        listening_port                  => 11589,
         max_file_size_diff_for_patching => "1000",
         max_file_size_for_versioning    => "1000",
-        rate_limit_local_peers 	        => "false",
-        send_buf_size 		        => "5",
-        sync_max_time_diff 		=> "600",
-        sync_trash_ttl 		        => "30",
-        upload_limit 		        => 0,
-        use_upnp 			=> 0,
-        recv_buf_size 		        => "5"
+        rate_limit_local_peers          => "false",
+        send_buf_size                   => "5",
+        sync_max_time_diff              => "600",
+        sync_trash_ttl                  => "30",
+        upload_limit                    => 0,
+        use_upnp                        => 0,
+        recv_buf_size                   => "5"
     }
 
 =cut
@@ -621,7 +621,7 @@ Returns OS name where BitTorrent Sync is running.
 =cut
 
 sub get_os {
-        return _access_api("get_os");
+    return _access_api("get_os");
 }
 
 =head2 get_version
