@@ -98,6 +98,9 @@ available for download here: L<http://www.bittorrent.com/sync/downloads>.
 
 No other non-perl requirements are needed.
 
+You will need an API key, for which you'll need to apply here:
+L<http://www.bittorrent.com/sync/developers>
+
 =head1 CONFIG FILE
 
 To enable the API, you must run BitTorrent Sync with the config file.
@@ -239,8 +242,8 @@ sub add_folder {
     
     my $request = "add_folder&dir=$dir";
 
-    $secret and $request .= "&secret=$secret";
-    $selective_sync and $request .= '&selective_sync=1';
+    $request .= "&secret=$secret" if $secret;
+    $request .= '&selective_sync=1' if $selective_sync;
 
     return _access_api($request);
 }
@@ -276,7 +279,7 @@ sub get_folders {
     my ($secret) = @_;
     my $request = "get_folders";
 
-    $secret and $request .= "&secret=$secret";
+    $request .= "&secret=$secret" if $secret;
 
     return _access_api($request);
 }
@@ -343,7 +346,7 @@ sub get_files {
     my ($secret, $path) = @_;
     my $request = "get_files&secret=$secret";
 
-    $path and $request .= "&path=$path";
+    $request .= "&path=$path" if $path;
 
     return _access_api($request);
 }
@@ -408,11 +411,13 @@ sub get_folder_peers {
 =head2 get_secrets
 
 Generates read-write, read-only and encryption read-only secrets.
-If ‘secret’ parameter is specified, will return secrets available for sharing under this secret.
+If ‘secret’ parameter is specified, 
+will return secrets available for sharing under this secret.
 The Encryption Secret is new functionality.
 This is a secret for a read-only peer with encrypted content
 (the peer can sync files but can not see their content).
-One example use is if a user wanted to backup files to an untrusted, unsecure, or public location.
+One example use is if a user wanted to backup files to an untrusted, 
+unsecure, or public location.
 This is set to disabled by default for all users but included in the API.
 
     {
@@ -431,7 +436,8 @@ If type = encrypted, generate secret with support of encrypted peer
 
 =back
 
-NOTE: there seems to be some contradiction in the documentation wrt to secret being required.
+NOTE: there seems to be some contradiction in the documentation 
+wrt to secret being required.
 
 =cut
 
@@ -439,8 +445,8 @@ sub get_secrets {
     my ($secret, $type) = @_;
 
     my $request = "get_secrets";
-    $secret and $request .= "&secret=$secret";
-    $type and $request .= "&type=encryption";
+    $request .= "&secret=$secret" if $secret;
+    $request .= "&type=encryption" if $type;
     return _access_api($request);
 }
 
@@ -516,7 +522,8 @@ sub set_folder_prefs {
 
 =head2 get_folder_hosts
 
-Returns list of predefined hosts for the folder, or error code if a secret is not specified.
+Returns list of predefined hosts for the folder, 
+or error code if a secret is not specified.
 
     {
         hosts => [
@@ -569,7 +576,8 @@ sub set_folder_hosts {
 
 =head2 get_prefs
 
-Returns BitTorrent Sync preferences. Contains dictionary with advanced preferences.
+Returns BitTorrent Sync preferences. 
+Contains dictionary with advanced preferences.
 Please see Sync user guide for description of each option.
 
     {
@@ -600,7 +608,8 @@ sub get_prefs {
 
 =head2 set_prefs
 
-Sets BitTorrent Sync preferences. Parameters are the same as in ‘Get preferences’.
+Sets BitTorrent Sync preferences. 
+Parameters are the same as in ‘Get preferences’.
 Advanced preferences are set as general settings. Returns current settings.
 
 =cut
@@ -676,7 +685,9 @@ sub _access_api {
 
     my $response = get $request;
 
-    die "API returned undef, check if btsync process is running\n" unless $response;
+    die "API returned undef, check if btsync process is running\n" 
+                                                        unless $response;
+                                                        
     return decode_json($response);
 }
 
@@ -685,10 +696,6 @@ sub _format_windows_path {
     $path =~ s!/|\\!\\!g;
     return $path;
 }
-
-=head1 TODO
-
-An actual testing suite
 
 =head1 SEE ALSO
 
@@ -700,9 +707,12 @@ Erez Schatz <erez.schatz@gmail.com>
 
 =head1 LICENSE
 
-Copyright (c) 2014 Erez Schatz
+Copyright (c) 2014 Erez Schatz.
+This implementation of the BitTorrent Sync API is licensed under the 
+GNU General Public License (GPL) Version 3 or later.
 
-The BitTorrent Sync API itself, and the description text used in this module is:
+The BitTorrent Sync API itself, 
+and the description text used in this module is:
 
 Copyright (c) 2014 BitTorrent, Inc.
 

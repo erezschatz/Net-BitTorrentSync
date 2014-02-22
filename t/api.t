@@ -19,7 +19,7 @@ like (
 );
 
 # add_folder
-my $response = add_folder(abs_path '.\t\data');
+my $response = add_folder(abs_path '.\t\data\sync_test');
 
 is_deeply($response, { result => 0 }, 'folder added ok');
 
@@ -42,7 +42,10 @@ my $secret = $response->[0]->{secret};
 $response = get_secrets($secret);
 
 ok (ref $response eq 'HASH', 'get_secrets returns a hashref');
-ok ($response->{read_write} eq $secret, 'the read_write secret is folder secret');
+ok ($response->{read_write} eq $secret, 
+    'the read_write secret is folder secret');
+ok ($response->{read_only} ne $secret, 
+    'and the read_only secret is different');
 
 =begin get_files
 
@@ -62,7 +65,6 @@ $response = get_os();
 if ($^O eq 'MSWin32') {
     is_deeply ($response, { os => "win32" }, 'OS identified as MSWin32');
 }
-
 
 =begin
 
