@@ -155,6 +155,7 @@ Specifies path to the config file path.
 sub start_btsync {
     my ($btsync, $path) = @_;
     if ($^O eq 'MSWin32') {
+        ($btsync, $path) = map {_format_windows_path($_)} ($btsync,$path);
         system("\"$btsync\" /config \"$path\"");
     } else {
         system("$btsync --config $path");
@@ -181,6 +182,7 @@ Specifies path to the config file.
 
 sub set_config {
     my $path = shift;
+    
     local $/;
     open my $fh, '<', $path or die "Error opening config file $path - $!\n";
     $config = decode_json(<$fh>);
@@ -233,6 +235,8 @@ Specifies sync mode: selective - 1; all files (default) - 0
 
 sub add_folder {
     my ($dir, $secret, $selective_sync) = @_;
+    $dir = _format_windows_path($dir) if $^O eq 'MSWin32';
+    
     my $request = "add_folder&dir=$dir";
 
     $secret and $request .= "&secret=$secret";
@@ -591,7 +595,7 @@ Please see Sync user guide for description of each option.
 =cut
 
 sub get_prefs {
-        return _access_api("get_prefs");
+    return _access_api("get_prefs");
 }
 
 =head2 set_prefs
@@ -602,14 +606,14 @@ Advanced preferences are set as general settings. Returns current settings.
 =cut
 
 sub set_prefs {
-        my ($secret, $prefs) = @_;
-        my $request = "set_prefs";
+    my ($secret, $prefs) = @_;
+    my $request = "set_prefs";
 
-        foreach my $pref (keys %{$prefs}) {
-                $request .= '&' . $pref . '=' . $prefs->{$pref};
-        }
+    foreach my $pref (keys %{$prefs}) {
+        $request .= '&' . $pref . '=' . $prefs->{$pref};
+    }
 
-        return _access_api($request);
+    return _access_api($request);
 }
 
 =head2 get_os
@@ -674,6 +678,12 @@ sub _access_api {
 
     die "API returned undef, check if btsync process is running\n" unless $response;
     return decode_json($response);
+}
+
+sub _format_windows_path {
+    my $path = shift;
+    $path =~ s!/|\\!\\!g;
+    return $path;
 }
 
 =head1 TODO
