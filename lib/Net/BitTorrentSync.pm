@@ -155,8 +155,7 @@ Specifies path to the config file path.
 sub start_btsync {
     my ($btsync, $path) = @_;
     if ($^O eq 'MSWin32') {
-        # Make sure to turn \ into \\
-        system("$btsync /config $path");
+        system("\"$btsync\" /config \"$path\"");
     } else {
         system("$btsync --config $path");
     }
@@ -166,7 +165,9 @@ sub start_btsync {
 =head2 set_config
 
 Parses the config file to get the listened address from.
-Alternatively, you can use set_listened_address
+Alternatively, you can use set_listened_address.
+
+returns the config JSON parsed to a Perl HashRef.
 
 =over 4
 
@@ -185,6 +186,7 @@ sub set_config {
     $config = decode_json(<$fh>);
     close $fh;
     $listen = $config->{webui}->{listen};
+    return $config;
 }
 
 =head2 set_listened_address
@@ -650,7 +652,7 @@ Returns current upload and download speed.
 =cut
 
 sub get_speed {
-        return _access_api("get_speed");
+    return _access_api("get_speed");
 }
 
 =head2 shutdown
@@ -660,18 +662,18 @@ Gracefully stops Sync.
 =cut
 
 sub shutdown {
-        return _access_api("shutdown");
+    return _access_api("shutdown");
 }
 
 sub _access_api {
-        my $request = shift;
+    my $request = shift;
 
-        $request = 'http://$listen/api?method=' . $request;
+    $request = "http://$listen/api?method=" . $request;
 
-        my $response = get $request;
+    my $response = get $request;
 
-        die "API returned undef, check if btsync process is running\n" unless $response;
-        return decode_json($response);
+    die "API returned undef, check if btsync process is running\n" unless $response;
+    return decode_json($response);
 }
 
 =head1 TODO
