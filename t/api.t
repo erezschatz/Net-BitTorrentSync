@@ -59,8 +59,38 @@ ok ($response->{read_write} eq $secret,
 ok ($response->{read_only} ne $secret,
     'and the read_only secret is different');
 
+# get_files
+
+$response = get_files($secret);
+
+my $compare = [
+  {
+    have_pieces => 1,
+    name => "New Text Document.txt",
+    size => 3359,
+    state => "created",
+    total_pieces => 1,
+    type => "file",
+  },
+  { name => "sub", state => "created", type => "folder" },
+];
+
+is_deeply ($response, $compare, 'matching file structures');
+
 $response = get_files($secret, 'sub');
 
+$compare = [
+  {
+    have_pieces => 1,
+    name => "index.html",
+    size => 11,
+    state => "created",
+    total_pieces => 1,
+    type => "file",
+  },
+];
+
+is_deeply ($response, $compare, 'matching file structures');
 
 # remove_folder
 is_deeply(
