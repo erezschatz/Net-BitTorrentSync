@@ -1,8 +1,13 @@
 # ABSTRACT: Perl wrapper for the BitTorrent Sync API
+package Net::BitTorrentSync;
 
 use strict;
 use warnings;
-package Net::BitTorrentSync;
+
+# for now, check switching to HTTP::Tiny or Hijk
+use LWP::Simple;
+use JSON;
+
 use Exporter;
 our @ISA = 'Exporter';
 
@@ -30,10 +35,6 @@ our @EXPORT = qw(
 );
 
 our $VERSION = '0.2';
-
-# for now, check switching to HTTP::Tiny or Hijk
-use LWP::Simple;
-use JSON;
 
 my $config;
 
@@ -72,29 +73,36 @@ then
 
 =head1 DESCRIPTION
 
-BitTorrent Sync uses the BitTorrent protocol to sync files between two or more machines, or nodes
-(computers or mobile phones) without the need of a server. It uses "secrets", a unique hash string
-given for each folder that replaces the need for a tracker machine. The more nodes the network has,
-the faster the data will be synched between the nodes, allowing for very fast exchange rates.
-In addition, folders and files can be shared as read-only, or as read and write.
+BitTorrent Sync uses the BitTorrent protocol to sync files between
+two or more machines, or nodes (computers or mobile phones) without
+the need of a server. It uses "secrets", a unique hash string given
+for each folder that replaces the need for a tracker machine.
+The more nodes the network has, the faster the data will be synched
+between the nodes, allowing for very fast exchange rates.
+In addition, folders and files can be shared as read-only, or as
+read and write.
 
 This is a complete wrapper of the published BitTorrent Sync API.
-It can be used to connect your Perl application to a running BitTorrent Sync instance, in order
-to perform any action such as adding, removing folders/files, querying them, setting preferences,
+It can be used to connect your Perl application to a running
+BitTorrent Sync instance, in order to perform any action such as
+adding, removing folders/files, querying them, setting preferences,
 and fetch information about the BitTorrent Sync instance.
 
 =head1 !WARNING!
 
-The BitTorrent Sync technology and the existing BitTorrent Sync client are not open source or free
-software, nor are their specs available in any shape or form other than the API. Therefore, there
-is no guarantee whatsoever that the communication between nodes is not being monitored by
-BitTorrent Inc. or by any third party, including the US Government or any Agency on behalf of the
-US Government.
+The BitTorrent Sync technology and the existing BitTorrent Sync
+client are not open source or free software, nor are their specs
+available in any shape or form other than the API. Therefore, there
+is no guarantee whatsoever that the communication between nodes is
+not being monitored by BitTorrent Inc. or by any third party,
+including the US Government or any Agency on behalf of the US
+Government.
 
 =head1 REQUIREMENTS
 
-In order to run these commands you must have a running instance of the BitTorrent Sync client,
-available for download here: L<http://www.bittorrent.com/sync/downloads>.
+In order to run these commands you must have a running instance of the
+BitTorrent Sync client, available for download here:
+L<http://www.bittorrent.com/sync/downloads>.
 
 No other non-perl requirements are needed.
 
@@ -104,9 +112,11 @@ L<http://www.bittorrent.com/sync/developers>
 =head1 CONFIG FILE
 
 To enable the API, you must run BitTorrent Sync with the config file.
-This can be achieved either through the function start_btsync, or manually:
+This can be achieved either through the function start_btsync, or
+manually:
 
-On Mac and Linux, run the Sync executable with --config path_to_file argument.
+On Mac and Linux, run the Sync executable with --config path_to_file
+argument.
 On Windows, use /config path_to_file.
 
 The config file may be located in any directory on your drive.
@@ -145,7 +155,8 @@ Launches a system command that starts the BitTorrent Sync program.
 =item executable (required)
 
 Specifies path to the BitTorrent Sync executable.
-Alternatively, you can start the process manually and call either set_config or set_listened_address.
+Alternatively, you can start the process manually and call either
+set_config or set_listened_address.
 
 =item config_file (required)
 
@@ -185,7 +196,7 @@ Specifies path to the config file.
 
 sub set_config {
     my $path = shift;
-    
+
     local $/;
     open my $fh, '<', $path or die "Error opening config file $path - $!\n";
     $config = decode_json(<$fh>);
@@ -202,7 +213,8 @@ Sets the listened address used to communicate with the BitTorrent Sync Process
 
 =item address (required)
 
-Specifies address that the process listens to, address should be represented as “[address]:[port]”
+Specifies address that the process listens to, address should be represented as
+“[address]:[port]”
 
 =back
 
@@ -214,8 +226,10 @@ sub set_listened_address {
 
 =head2 add_folder
 
-Adds a folder to Sync. If a secret is not specified, it will be generated automatically.
-The folder will have to pre-exist on the disk and Sync will add it into a list of syncing folders.
+Adds a folder to Sync. If a secret is not specified, it will be generated
+automatically.
+The folder will have to pre-exist on the disk and Sync will add it into a list
+of syncing folders.
 Returns '0' if no errors, error code and error message otherwise.
 
 =over 4
@@ -239,7 +253,7 @@ Specifies sync mode: selective - 1; all files (default) - 0
 sub add_folder {
     my ($dir, $secret, $selective_sync) = @_;
     $dir = _format_windows_path($dir) if $^O eq 'MSWin32';
-    
+
     my $request = "add_folder&dir=$dir";
 
     $request .= "&secret=$secret" if $secret;
@@ -287,7 +301,8 @@ sub get_folders {
 =head2 remove_folder
 
 Removes folder from Sync while leaving actual folder and files on disk.
-It will remove a folder from the Sync list of folders and does not touch any files or folders on disk.
+It will remove a folder from the Sync list of folders and does not touch any
+files or folders on disk.
 Returns '0' if no error, '1' if there’s no folder with specified secret.
 
 =over 4
@@ -310,7 +325,8 @@ sub remove_folder {
 =head2 get_files
 
 Returns list of files within the specified directory.
-If a directory is not specified, will return list of files and folders within the root folder.
+If a directory is not specified, will return list of files and folders within
+the root folder.
 Note that the Selective Sync function is only available in the API at this time.
 
     [
@@ -411,12 +427,12 @@ sub get_folder_peers {
 =head2 get_secrets
 
 Generates read-write, read-only and encryption read-only secrets.
-If ‘secret’ parameter is specified, 
+If ‘secret’ parameter is specified,
 will return secrets available for sharing under this secret.
 The Encryption Secret is new functionality.
 This is a secret for a read-only peer with encrypted content
 (the peer can sync files but can not see their content).
-One example use is if a user wanted to backup files to an untrusted, 
+One example use is if a user wanted to backup files to an untrusted,
 unsecure, or public location.
 This is set to disabled by default for all users but included in the API.
 
@@ -436,7 +452,7 @@ If type = encrypted, generate secret with support of encrypted peer
 
 =back
 
-NOTE: there seems to be some contradiction in the documentation 
+NOTE: there seems to be some contradiction in the documentation
 wrt to secret being required.
 
 =cut
@@ -522,7 +538,7 @@ sub set_folder_prefs {
 
 =head2 get_folder_hosts
 
-Returns list of predefined hosts for the folder, 
+Returns list of predefined hosts for the folder,
 or error code if a secret is not specified.
 
     {
@@ -576,7 +592,7 @@ sub set_folder_hosts {
 
 =head2 get_prefs
 
-Returns BitTorrent Sync preferences. 
+Returns BitTorrent Sync preferences.
 Contains dictionary with advanced preferences.
 Please see Sync user guide for description of each option.
 
@@ -608,7 +624,7 @@ sub get_prefs {
 
 =head2 set_prefs
 
-Sets BitTorrent Sync preferences. 
+Sets BitTorrent Sync preferences.
 Parameters are the same as in ‘Get preferences’.
 Advanced preferences are set as general settings. Returns current settings.
 
@@ -685,9 +701,9 @@ sub _access_api {
 
     my $response = get $request;
 
-    die "API returned undef, check if btsync process is running\n" 
+    die "API returned undef, check if btsync process is running\n"
                                                         unless $response;
-                                                        
+
     return decode_json($response);
 }
 
@@ -708,10 +724,10 @@ Erez Schatz <erez.schatz@gmail.com>
 =head1 LICENSE
 
 Copyright (c) 2014 Erez Schatz.
-This implementation of the BitTorrent Sync API is licensed under the 
+This implementation of the BitTorrent Sync API is licensed under the
 GNU General Public License (GPL) Version 3 or later.
 
-The BitTorrent Sync API itself, 
+The BitTorrent Sync API itself,
 and the description text used in this module is:
 
 Copyright (c) 2014 BitTorrent, Inc.
