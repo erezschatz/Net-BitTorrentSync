@@ -16,7 +16,7 @@ chomp (my $config = <STDIN>);
 start_btsync($btsync, $config);
 
 # set_config
-$config = set_config('/home/erez/btsync/config');
+$config = set_config($config);
 
 ok (ref $config->{'webui'} eq 'HASH', 'correct structure returned');
 
@@ -31,7 +31,7 @@ like (
 set_listened_address($config->{'webui'}->{'listen'});
 
 # add_folder
-my $response = add_folder(abs_path '/home/erez/btsync/');
+my $response = add_folder(abs_path './t/data/sync_test');
 
 is_deeply($response, { result => 0 }, 'folder added ok');
 
@@ -69,10 +69,17 @@ is_deeply(
     'folder removed ok'
  );
 
+$response = get_folders();
+
+is_deeply ($response, [], 'should now be empty ArrayRef');
+
 # get_os
 $response = get_os();
+
 if ($^O eq 'MSWin32') {
-    is_deeply ($response, { os => "win32" }, 'OS identified as MSWin32');
+        is_deeply ($response, { os => "win32" }, 'OS identified as MSWin32');
+} elsif ($^O eq 'linux') {
+        is_deeply ($response, { os => "linux" }, 'OS identified as linux');
 }
 
 shutdown_btsync();
