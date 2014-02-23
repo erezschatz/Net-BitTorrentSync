@@ -7,8 +7,16 @@ use Test::More;
 
 use_ok( 'Net::BitTorrentSync');
 
+# start_btsync
+print "Enter path for btsync executive file: \n";
+chomp (my $btsync = <STDIN>);
+print "Enter path for config file: \n";
+chomp (my $config = <STDIN>);
+
+start_btsync($btsync, $config);
+
 # set_config
-my $config = set_config('/home/erez/btsync/config');
+$config = set_config('/home/erez/btsync/config');
 
 ok (ref $config->{'webui'} eq 'HASH', 'correct structure returned');
 
@@ -18,8 +26,12 @@ like (
     'listened address is [ip:port]'
 );
 
+# set_listened_address
+
+set_listened_address($config->{'webui'}->{'listen'});
+
 # add_folder
-my $response = add_folder(abs_path './t/data/sync_test');
+my $response = add_folder(abs_path '/home/erez/btsync/');
 
 is_deeply($response, { result => 0 }, 'folder added ok');
 
@@ -47,11 +59,8 @@ ok ($response->{read_write} eq $secret,
 ok ($response->{read_only} ne $secret,
     'and the read_only secret is different');
 
-=begin get_files
-
 $response = get_files($secret, 'sub');
 
-=cut
 
 # remove_folder
 is_deeply(
@@ -66,10 +75,10 @@ if ($^O eq 'MSWin32') {
     is_deeply ($response, { os => "win32" }, 'OS identified as MSWin32');
 }
 
+shutdown_btsync();
+
 =begin
 
-    start_btsync
-    set_listened_path
     set_file_prefs
     get_folder_peers
     get_folder_prefs
@@ -80,7 +89,6 @@ if ($^O eq 'MSWin32') {
     set_prefs
     get_version
     get_speed
-    shutdown
 
 =cut
 

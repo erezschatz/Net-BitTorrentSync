@@ -14,7 +14,7 @@ our @ISA = 'Exporter';
 our @EXPORT = qw(
     start_btsync
     set_config
-    set_listened_path
+    set_listened_address
     add_folder
     get_folders
     remove_folder
@@ -31,7 +31,7 @@ our @EXPORT = qw(
     get_os
     get_version
     get_speed
-    shutdown
+    shutdown_btsync
 );
 
 our $VERSION = '0.2';
@@ -690,7 +690,7 @@ Gracefully stops Sync.
 
 =cut
 
-sub shutdown {
+sub shutdown_btsync {
     return _access_api("shutdown");
 }
 
