@@ -109,6 +109,9 @@ No other non-perl requirements are needed.
 You will need an API key, for which you'll need to apply here:
 L<http://www.bittorrent.com/sync/developers>
 
+Once BitTorrent Sync is installed, you need to add it's executable's location
+to the system path.
+
 =head1 CONFIG FILE
 
 To enable the API, you must run BitTorrent Sync with the config file.
