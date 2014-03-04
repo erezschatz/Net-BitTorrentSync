@@ -36,9 +36,7 @@ our @EXPORT = qw(
 
 our $VERSION = '0.2';
 
-my $config;
-
-my $listen;
+my ($config, $listen);
 
 =head1 NAME
 
@@ -109,8 +107,9 @@ No other non-perl requirements are needed.
 You will need an API key, for which you'll need to apply here:
 L<http://www.bittorrent.com/sync/developers>
 
-Once BitTorrent Sync is installed, you need to add it's executable's location
-to the system path.
+Once BitTorrent Sync is installed, either add its executable's location
+to the system path, or pass the location of the executable and the config
+file to the start_btsync function.
 
 =head1 CONFIG FILE
 
@@ -123,6 +122,9 @@ argument.
 On Windows, use /config path_to_file.
 
 The config file may be located in any directory on your drive.
+
+If you wish for this module to locate it automatically, you need
+to name it btconfig and add its path to the environment path variable.
 
 Sync uses JSON format for the configuration file.
 Here is a sample config file that you can use to enable API:
@@ -170,14 +172,19 @@ Specifies path to the config file path.
 =cut
 
 sub start_btsync {
-    my ($btsync, $path) = @_;
+  my ($btsync, $cfg_path) = @_;
+  $btsync ||= _find_in_path('btsync');
+  $cfg_path ||= _find_in_path('btconfig');
+
     if ($^O eq 'MSWin32') {
-        ($btsync, $path) = map {_format_windows_path($_)} ($btsync,$path);
-        system("\"$btsync\" /config \"$path\"");
+      ($btsync, $cfg_path) = map {
+        _format_windows_path($_)
+      } ($btsync,$cfg_path);
+        system("\"$btsync\" /config \"$cfg_path\"");
     } else {
-        system("$btsync --config $path");
+        system("$btsync --config $cfg_path");
     }
-    set_config($path);
+    set_config($cfg_path);
 }
 
 =head2 set_config
@@ -198,10 +205,12 @@ Specifies path to the config file.
 =cut
 
 sub set_config {
-    my $path = shift;
+    my $cfg_path = shift;
+    $cfg_path ||= _find_in_path('btconfig');
 
     local $/;
-    open my $fh, '<', $path or die "Error opening config file $path - $!\n";
+    open my $fh, '<', $cfg_path or
+      die "Error opening config file $cfg_path - $!\n";
     $config = decode_json(<$fh>);
     close $fh;
     $listen = $config->{webui}->{listen};
@@ -714,6 +723,18 @@ sub _format_windows_path {
     my $path = shift;
     $path =~ s!/|\\!\\!g;
     return $path;
+}
+
+sub _find_in_path {
+  my $locate = shift;
+  foreach my $dir (split ':', $ENV{'PATH'}) {
+    opendir my $dh, $dir or die "can't opendir $dir: $!";
+    if (grep { $_ eq $locate } readdir $dh) {
+      closedir $dh;
+      return "$dir/$locate";
+    }
+    closedir $dh;
+  }
 }
 
 =head1 SEE ALSO

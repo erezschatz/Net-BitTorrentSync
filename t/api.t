@@ -8,15 +8,11 @@ use Test::More;
 use_ok( 'Net::BitTorrentSync');
 
 # start_btsync
-print "Enter path for btsync executive file: \n";
-chomp (my $btsync = <STDIN>);
-print "Enter path for config file: \n";
-chomp (my $config = <STDIN>);
 
-start_btsync($btsync, $config);
+start_btsync();
 
 # set_config
-$config = set_config($config);
+my $config = set_config();
 
 ok (ref $config->{'webui'} eq 'HASH', 'correct structure returned');
 
@@ -92,6 +88,22 @@ $compare = [
 
 is_deeply ($response, $compare, 'matching file structures');
 
+
+=begin
+
+    set_file_prefs
+    get_folder_peers
+    get_folder_prefs
+    set_folder_prefs
+    get_folder_hosts
+    set_folder_hosts
+    get_prefs
+    set_prefs
+    get_version
+    get_speed
+
+=cut
+
 # remove_folder
 is_deeply(
     remove_folder($secret),
@@ -113,20 +125,5 @@ if ($^O eq 'MSWin32') {
 }
 
 shutdown_btsync();
-
-=begin
-
-    set_file_prefs
-    get_folder_peers
-    get_folder_prefs
-    set_folder_prefs
-    get_folder_hosts
-    set_folder_hosts
-    get_prefs
-    set_prefs
-    get_version
-    get_speed
-
-=cut
 
 done_testing;
