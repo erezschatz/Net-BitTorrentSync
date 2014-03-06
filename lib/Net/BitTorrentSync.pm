@@ -521,7 +521,7 @@ Returns current settings.
 
 A hashref containing the preferences you wish to change.
 
-=over 8
+=over 4
 
 =item use_dht
 
@@ -748,6 +748,19 @@ sub _find_in_path {
     closedir $dh;
   }
 }
+
+=head1 TODO
+
+There's no way to make test this without a btsync executable in the path
+I would've liked to be able to test the module without having to force the
+user to conform to a precondition.
+
+Also, the current documentation is lifted verbatim from the BitTorrent Sync
+one, there should be some more explanation on what does what on my side.
+
+=head1 BUGS
+
+Most likely. Patches, bug reports and other ideas are welcomed.
 
 =head1 SEE ALSO
 
