@@ -154,6 +154,7 @@ Here is a sample config file that you can use to enable API:
 =head2 start_btsync
 
 Launches a system command that starts the BitTorrent Sync program.
+Returns the full path to the BitTorrent Sync executable.
 
 =over 4
 
@@ -184,7 +185,8 @@ sub start_btsync {
     } else {
         system("$btsync --config $cfg_path");
     }
-    set_config($cfg_path);
+  set_config($cfg_path);
+  return $btsync;
 }
 
 =head2 set_config
@@ -515,7 +517,9 @@ Returns current settings.
 
 =item secret (required)
 
-=item params
+=item preferences
+
+A hashref containing the preferences you wish to change.
 
 =over 8
 
@@ -639,6 +643,14 @@ sub get_prefs {
 Sets BitTorrent Sync preferences.
 Parameters are the same as in ‘Get preferences’.
 Advanced preferences are set as general settings. Returns current settings.
+
+=over 4
+
+=item preferences (required)
+
+A hashref (see get_prefs) containing the preferences you wish to change.
+
+=back
 
 =cut
 
