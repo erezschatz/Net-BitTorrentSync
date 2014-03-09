@@ -88,9 +88,11 @@ $compare = [
 
 is_deeply ($response, $compare, 'matching file structures');
 
-# TODO: get_folder_peers
+# get_folder_peers
 
 $response = get_folder_peers($secret);
+
+is_deeply ($response , [], 'Should get an empty arrayref');
 
 # get_folder_prefs
 
@@ -128,9 +130,11 @@ $compare = {
 
 is_deeply ($response, $compare, 'Correct new folder preferences');
 
-# TODO: get_folder_hosts
+# get_folder_hosts
 
 $response = get_folder_hosts($secret);
+
+is_deeply($response, { hosts => [] }, 'empty arrayref for now');
 
 # get_prefs
 
@@ -142,7 +146,8 @@ my @keys = qw/
               lang listening_port max_file_size_diff_for_patching
               max_file_size_for_versioning rate_limit_local_peers
               recv_buf_size send_buf_size sync_max_time_diff sync_trash_ttl
-              upload_limit use_upnp/;
+              upload_limit use_upnp
+             /;
 
 is_deeply([sort keys %{$response}], [@keys], 'same keys');
 
@@ -163,7 +168,10 @@ is_deeply ($response, [], 'should now be empty ArrayRef');
 
 # General information methods
 
-# TODO: get_speed
+# get_speed
+
+$response = get_speed();
+is_deeply ($response, { download => 0, upload => 0 }, 'no speed');
 
 # get_version
 $response = get_version();
