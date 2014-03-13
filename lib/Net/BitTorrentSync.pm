@@ -751,6 +751,8 @@ sub _find_in_path {
 
 =head1 TODO
 
+Not all methods are tested still
+
 There's no way to make test this without a btsync executable in the path
 I would've liked to be able to test the module without having to force the
 user to conform to a precondition.
